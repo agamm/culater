@@ -1,6 +1,6 @@
 {
   "name": "culater",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Remote terminal for Claude Code - c(See) you later!",
   "bin": {
     "culater": "./bin/culater.js"
@@ -18,7 +18,6 @@
     "websocket",
     "tunnel"
   ],
-  "author": "Agam",
   "license": "MIT",
   "dependencies": {
     "node-pty": "^1.0.0",

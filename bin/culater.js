@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-const { execSync, spawn } = require('child_process');
-const path = require('path');
+const { execSync } = require('child_process');
+const readline = require('readline');
 
 // Check for cloudflared
 try {
@@ -15,55 +15,54 @@ try {
   process.exit(1);
 }
 
-// Generate random password
-function randomPass() {
-  const chars = 'abcdefghijkmnpqrstuvwxyz23456789';
-  let pass = '';
-  for (let i = 0; i < 5; i++) {
-    pass += chars[Math.floor(Math.random() * chars.length)];
-  }
-  return pass;
-}
-
 // Parse args
 const args = process.argv.slice(2);
-let password = randomPass();
-let ntfyTopic = '';
+let password = null;
 let workDir = process.cwd();
 
 for (let i = 0; i < args.length; i++) {
-  if (args[i] === '-p' || args[i] === '--password') {
-    password = args[++i];
-  } else if (args[i] === '-n' || args[i] === '--ntfy') {
-    ntfyTopic = args[++i];
-  } else if (args[i] === '-d' || args[i] === '--dir') {
+  if (args[i] === '-d' || args[i] === '--dir') {
     workDir = args[++i];
   } else if (args[i] === '-h' || args[i] === '--help') {
     console.log(`
 \x1b[1mculater\x1b[0m - Remote terminal for Claude Code
 
 \x1b[1mUSAGE:\x1b[0m
-  npx culater [options]
+  npx culater <password> [options]
 
 \x1b[1mOPTIONS:\x1b[0m
-  -p, --password <pass>  Set password (default: random 5-char)
-  -n, --ntfy <topic>     Enable ntfy.sh push notifications
   -d, --dir <path>       Working directory (default: current)
   -h, --help             Show this help
 
 \x1b[1mEXAMPLES:\x1b[0m
-  npx culater
-  npx culater -p mysecret
-  npx culater -p mysecret -n my-ntfy-topic
-  npx culater -d ~/projects/myapp
+  npx culater mysecret
+  npx culater mysecret -d ~/projects/myapp
 `);
     process.exit(0);
+  } else if (!args[i].startsWith('-') && !password) {
+    password = args[i];
   }
 }
 
-// Set env and run server
-process.env.REMOTE_PASSWORD = password;
-process.env.NTFY_TOPIC = ntfyTopic;
-process.env.WORK_DIR = workDir;
+if (!password) {
+  console.error('\x1b[31mError: Password required\x1b[0m\n');
+  console.error('Usage: npx culater <password>');
+  process.exit(1);
+}
 
-require('../lib/server.js');
+// Ask for ntfy topic
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
+rl.question('ntfy.sh topic (press Enter to skip): ', (ntfyTopic) => {
+  rl.close();
+
+  // Set env and run server
+  process.env.REMOTE_PASSWORD = password;
+  process.env.NTFY_TOPIC = ntfyTopic.trim();
+  process.env.WORK_DIR = workDir;
+
+  require('../lib/server.js');
+});
