@@ -1,0 +1,34 @@
+{
+  "name": "culater",
+  "version": "1.0.0",
+  "description": "Remote terminal for Claude Code - c(See) you later!",
+  "bin": {
+    "culater": "./bin/culater.js"
+  },
+  "scripts": {
+    "start": "node bin/culater.js"
+  },
+  "keywords": [
+    "claude",
+    "claude-code",
+    "remote",
+    "terminal",
+    "mobile",
+    "xterm",
+    "websocket",
+    "tunnel"
+  ],
+  "author": "Agam",
+  "license": "MIT",
+  "dependencies": {
+    "node-pty": "^1.0.0",
+    "ws": "^8.16.0"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/agam/culater"
+  }
+}
