@@ -1,13 +1,12 @@
 {
   "name": "culater",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Remote terminal for Claude Code - c(See) you later!",
   "bin": {
     "culater": "./bin/culater.js"
   },
   "scripts": {
-    "start": "node bin/culater.js",
-    "postinstall": "chmod +x node_modules/node-pty/prebuilds/*/spawn-helper 2>/dev/null || true"
+    "start": "node bin/culater.js"
   },
   "keywords": [
     "claude",
