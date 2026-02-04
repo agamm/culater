@@ -1,6 +1,6 @@
 {
   "name": "culater",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Remote terminal for Claude Code - c(See) you later!",
   "bin": {
     "culater": "./bin/culater.js"
@@ -21,6 +21,7 @@
   "license": "MIT",
   "dependencies": {
     "node-pty": "^1.1.0",
+    "qrcode-terminal": "^0.12.0",
     "ws": "^8.16.0"
   },
   "engines": {
