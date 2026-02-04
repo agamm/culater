@@ -1,13 +1,13 @@
 {
   "name": "culater",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Remote terminal for Claude Code - c(See) you later!",
   "bin": {
     "culater": "./bin/culater.js"
   },
   "scripts": {
     "start": "node bin/culater.js",
-    "postinstall": "npm rebuild node-pty || true"
+    "postinstall": "chmod +x node_modules/node-pty/prebuilds/*/spawn-helper 2>/dev/null || true"
   },
   "keywords": [
     "claude",
@@ -21,7 +21,7 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "node-pty": "^1.0.0",
+    "node-pty": "^1.1.0",
     "ws": "^8.16.0"
   },
   "engines": {

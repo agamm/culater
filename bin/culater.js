@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 
 const { execSync } = require('child_process');
-const readline = require('readline');
+const fs = require('fs');
+
+const CONFIG_FILE = '/tmp/culater.json';
 
 // Check for cloudflared
 try {
@@ -15,13 +17,32 @@ try {
   process.exit(1);
 }
 
+// Load saved config
+function loadConfig() {
+  try {
+    return JSON.parse(fs.readFileSync(CONFIG_FILE, 'utf8'));
+  } catch {
+    return {};
+  }
+}
+
+// Save config
+function saveConfig(config) {
+  try {
+    fs.writeFileSync(CONFIG_FILE, JSON.stringify(config, null, 2));
+  } catch {}
+}
+
 // Parse args
 const args = process.argv.slice(2);
 let password = null;
+let ntfyTopic = null;
 let workDir = process.cwd();
 
 for (let i = 0; i < args.length; i++) {
-  if (args[i] === '-d' || args[i] === '--dir') {
+  if (args[i] === '-n' || args[i] === '--ntfy') {
+    ntfyTopic = args[++i];
+  } else if (args[i] === '-d' || args[i] === '--dir') {
     workDir = args[++i];
   } else if (args[i] === '-h' || args[i] === '--help') {
     console.log(`
@@ -31,11 +52,13 @@ for (let i = 0; i < args.length; i++) {
   npx culater <password> [options]
 
 \x1b[1mOPTIONS:\x1b[0m
+  -n, --ntfy <topic>     ntfy.sh topic for push notifications (saved for next time)
   -d, --dir <path>       Working directory (default: current)
   -h, --help             Show this help
 
 \x1b[1mEXAMPLES:\x1b[0m
   npx culater mysecret
+  npx culater mysecret -n my-ntfy-topic
   npx culater mysecret -d ~/projects/myapp
 `);
     process.exit(0);
@@ -50,19 +73,20 @@ if (!password) {
   process.exit(1);
 }
 
-// Ask for ntfy topic
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout
-});
+// Load config and use saved ntfy if not provided
+const config = loadConfig();
+if (ntfyTopic) {
+  // Save new ntfy topic
+  config.ntfyTopic = ntfyTopic;
+  saveConfig(config);
+} else if (config.ntfyTopic) {
+  // Use saved ntfy topic
+  ntfyTopic = config.ntfyTopic;
+}
 
-rl.question('ntfy.sh topic (press Enter to skip): ', (ntfyTopic) => {
-  rl.close();
+// Set env and run server
+process.env.REMOTE_PASSWORD = password;
+process.env.NTFY_TOPIC = ntfyTopic || '';
+process.env.WORK_DIR = workDir;
 
-  // Set env and run server
-  process.env.REMOTE_PASSWORD = password;
-  process.env.NTFY_TOPIC = ntfyTopic.trim();
-  process.env.WORK_DIR = workDir;
-
-  require('../lib/server.js');
-});
+require('../lib/server.js');

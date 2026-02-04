@@ -10,8 +10,6 @@ Access Claude Code from your phone via a secure tunnel.
 npx culater mypassword
 ```
 
-You'll be prompted for an optional [ntfy.sh](https://ntfy.sh) topic to receive push notifications.
-
 ## Requirements
 
 - Node.js 18+
@@ -28,6 +26,7 @@ sudo apt install cloudflared
 ## Options
 
 ```
+-n, --ntfy <topic>     ntfy.sh topic for push notifications (saved for next time)
 -d, --dir <path>       Working directory (default: current)
 -h, --help             Show help
 ```
@@ -36,6 +35,12 @@ sudo apt install cloudflared
 
 ```bash
 # Start with password
+npx culater mysecret
+
+# With push notifications (saved to /tmp/culater.json)
+npx culater mysecret -n my-ntfy-topic
+
+# Subsequent runs use saved ntfy topic automatically
 npx culater mysecret
 
 # Specific directory
@@ -52,7 +57,7 @@ npx culater mysecret -d ~/projects/myapp
 - Streaming indicator
 - Password protection
 - Secure cloudflare tunnel
-- Optional push notifications via ntfy.sh
+- Push notifications via ntfy.sh (remembers your topic)
 
 ## License
 
