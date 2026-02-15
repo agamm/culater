@@ -6,7 +6,8 @@
     "culater": "./bin/culater.js"
   },
   "scripts": {
-    "start": "node bin/culater.js"
+    "start": "node bin/culater.js",
+    "demo:gif": "node scripts/make-readme-gif.mjs"
   },
   "keywords": [
     "claude",
@@ -30,5 +31,15 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/agamm/culater"
+  },
+  "devDependencies": {
+    "@remotion/bundler": "^4.0.422",
+    "@remotion/renderer": "^4.0.422",
+    "gifenc": "^1.0.3",
+    "playwright": "^1.58.2",
+    "pngjs": "^7.0.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "remotion": "^4.0.422"
   }
 }

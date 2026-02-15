@@ -1,16 +1,26 @@
 # culater
 
-Remote terminal for Claude Code - c(See) you later!
+**Your AI terminal, anywhere.**
 
-Access Claude Code from your phone via a secure tunnel.
+`culater` gives you fast phone access to your local Claude Code shell through a secure Cloudflare tunnel, so you can check output, unblock an agent, and keep moving when you're away from your desk.
+
+## Demo
+
+<p align="center">
+  <img src="assets/culater-demo.gif" alt="culater demo" width="720">
+</p>
+
+## Why culater
+
+- Agent-first remote terminal workflow from any mobile browser
+- Session survives refreshes and temporary network drops
+- Project-aware startup (recent folders remembered in `~/.culater/config.json`)
+- Manual `AI` launch when you want Claude, no forced auto-start
+- One command to start, no account setup
 
 ## Quick Start
 
-```bash
-npx culater mypassword
-```
-
-## Requirements
+### 1) Install requirements
 
 - Node.js 18+
 - [cloudflared](https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/install-and-setup/installation/)
@@ -23,10 +33,39 @@ brew install cloudflared
 sudo apt install cloudflared
 ```
 
-## Options
+### 2) Start culater
 
+```bash
+npx culater mypassword
 ```
--n, --ntfy <topic>     ntfy.sh topic for push notifications (saved for next time)
+
+### 3) Open it on your phone
+
+- Scan the terminal QR code
+- Enter the password
+- Start shell (or auto-start if no previous project history exists)
+
+## How It Works
+
+1. `culater` starts a local PTY shell.
+2. It creates a temporary Cloudflare tunnel URL.
+3. Your phone connects to the web terminal and controls that shell in real time.
+
+## Features
+
+- Mobile-optimized terminal UI
+- Touch scrolling with momentum
+- Quick action buttons (`/`, `Esc`, `Enter`, cursor pad)
+- Keyboard-aware controls that stay above the fold
+- Auto-reconnect and persistent session resume
+- Manual `AI` button to run Claude on demand
+- Password gate before terminal access
+- Optional ntfy push notifications for tunnel URL
+
+## CLI Options
+
+```txt
+-n, --ntfy <topic>     ntfy.sh topic for push notifications (saved)
 -d, --dir <path>       Working directory (default: current)
 -h, --help             Show help
 ```
@@ -37,27 +76,17 @@ sudo apt install cloudflared
 # Start with password
 npx culater mysecret
 
-# With push notifications (saved to /tmp/culater.json)
-npx culater mysecret -n my-ntfy-topic
-
-# Subsequent runs use saved ntfy topic automatically
-npx culater mysecret
-
-# Specific directory
+# Use a specific directory
 npx culater mysecret -d ~/projects/myapp
+
+# Enable ntfy notifications (saved for later runs)
+npx culater mysecret -n my-ntfy-topic
 ```
 
-## Features
+## Notes
 
-- Mobile-optimized terminal UI
-- Touch scrolling with momentum
-- Quick action buttons (/, Esc, ↓, Enter)
-- Auto-reconnect on disconnect
-- Keyboard-aware button positioning
-- Streaming indicator
-- Password protection
-- Secure cloudflare tunnel
-- Push notifications via ntfy.sh (remembers your topic)
+- Config is stored at `~/.culater/config.json`.
+- First tunnel open can briefly show Cloudflare `1033` while edge registration finishes.
 
 ## License
 
