@@ -2,8 +2,13 @@
 
 const { execSync } = require('child_process');
 const fs = require('fs');
+const os = require('os');
+const path = require('path');
 
-const CONFIG_FILE = '/tmp/culater.json';
+const CONFIG_DIR = path.join(os.homedir(), '.culater');
+const CONFIG_FILE = path.join(CONFIG_DIR, 'config.json');
+const LEGACY_CONFIG_FILE = '/tmp/culater.json';
+const MAX_RECENT_DIRS = 12;
 
 // Check for cloudflared
 try {
@@ -19,13 +24,18 @@ function loadConfig() {
   try {
     return JSON.parse(fs.readFileSync(CONFIG_FILE, 'utf8'));
   } catch {
-    return {};
+    try {
+      return JSON.parse(fs.readFileSync(LEGACY_CONFIG_FILE, 'utf8'));
+    } catch {
+      return {};
+    }
   }
 }
 
 // Save config
 function saveConfig(config) {
   try {
+    fs.mkdirSync(CONFIG_DIR, { recursive: true });
     fs.writeFileSync(CONFIG_FILE, JSON.stringify(config, null, 2));
   } catch {}
 }
@@ -63,20 +73,31 @@ if (!password) {
   process.exit(1);
 }
 
+workDir = path.resolve(workDir);
+
 // Load config and use saved ntfy if not provided
 const config = loadConfig();
 if (ntfyTopic) {
   // Save new ntfy topic
   config.ntfyTopic = ntfyTopic;
-  saveConfig(config);
 } else if (config.ntfyTopic) {
   // Use saved ntfy topic
   ntfyTopic = config.ntfyTopic;
 }
 
+const recentDirs = Array.isArray(config.recentDirs) ? config.recentDirs : [];
+const normalizedRecent = recentDirs
+  .filter(dir => typeof dir === 'string' && dir.trim())
+  .map(dir => path.resolve(dir));
+const previousRecentDirs = Array.from(new Set(normalizedRecent)).slice(0, MAX_RECENT_DIRS);
+const nextRecentDirs = [workDir, ...previousRecentDirs.filter(dir => dir !== workDir)].slice(0, MAX_RECENT_DIRS);
+config.recentDirs = nextRecentDirs;
+saveConfig(config);
+
 // Set env and run server
 process.env.REMOTE_PASSWORD = password;
 process.env.NTFY_TOPIC = ntfyTopic || '';
 process.env.WORK_DIR = workDir;
+process.env.RECENT_DIRS = JSON.stringify(previousRecentDirs);
 
 require('../lib/server.js');
