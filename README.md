@@ -6,15 +6,9 @@
 
 ## Demo
 
-![culater demo](assets/culater-demo.gif)
-
-The flow starts on your computer (CLI + QR), then continues on your phone.
-
-Regenerate the demo GIF:
-
-```bash
-node scripts/make-readme-gif.mjs
-```
+<p align="center">
+  <img src="assets/culater-demo.gif" alt="culater demo" width="720">
+</p>
 
 ## Why culater
 
