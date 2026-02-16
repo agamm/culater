@@ -1,6 +1,6 @@
 {
   "name": "culater",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "description": "Remote terminal for Claude Code - c(See) you later!",
   "bin": {
     "culater": "./bin/culater.js"
