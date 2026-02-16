@@ -1,9 +1,9 @@
 {
   "name": "culater",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "description": "Remote terminal for Claude Code - c(See) you later!",
   "bin": {
-    "culater": "./bin/culater.js"
+    "culater": "bin/culater.js"
   },
   "scripts": {
     "start": "node bin/culater.js",
